@@ -90,10 +90,6 @@ export class UserEntity {
     }
 
     static createWithoutId(user: Omit<IUser, "id">) : Either<Error, UserEntity> {
-        const userEntity = new UserEntity({...user, id: ""})
-        const validOrError = userEntity.validate()
-        if(validOrError.left) return Left.create(validOrError.left)
-        
-        return Right.create(userEntity)
+        return this.create({...user, id: ""})
     }
 }
