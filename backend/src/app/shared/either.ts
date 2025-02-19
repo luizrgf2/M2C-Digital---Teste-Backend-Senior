@@ -1,16 +1,9 @@
 export class Left<T> {
-    value: T
+    left: T
+    right = undefined
 
     constructor(value: T) {
-        this.value = value
-    }
-
-    isRight() {
-        return false
-    }
-
-    isLeft() {
-        return true
+        this.left = value
     }
 
     static create<T>(value: T) {
@@ -19,18 +12,11 @@ export class Left<T> {
 }
 
 export class Right<T> {
-    value: T
-
+    left = undefined
+    right:T
+    
     constructor(value: T) {
-        this.value = value
-    }
-
-    isRight() {
-        return true
-    }
-
-    isLeft() {
-        return false
+        this.right = value
     }
 
     static create<T>(value: T) {
