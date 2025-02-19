@@ -57,8 +57,8 @@ export class CompanyEntity {
         this.company.deleted = deleted;
     }
 
-    private isValidName(name: string): boolean {
-        return name.length >= 4 && name.length <= 100;
+    private isValidName(): boolean {
+        return this.name.length >= 4 && this.name.length <= 100;
     }
 
     private isValidDocument(document: string): boolean {
@@ -66,7 +66,7 @@ export class CompanyEntity {
     }
 
     validate(): Either<Error, void> {
-        if (!this.isValidName(this.company.name)) return Left.create(new CompanyInvalidNameError());
+        if (!this.isValidName()) return Left.create(new CompanyInvalidNameError());
         if (!this.isValidDocument(this.company.document)) return Left.create(new CompanyInvalidDocumentError());
 
         return Right.create(undefined);
