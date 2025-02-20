@@ -9,8 +9,8 @@ import { ErrorBase } from 'src/core/shared/errorBase';
 export class JWTService implements IJWTService {
     constructor(private readonly jwtService: JwtService) {}
 
-    generateToken(payload: object, expiresIn?: string): string {
-        return this.jwtService.sign(payload, { expiresIn });
+    generateToken(payload: object): string {
+        return this.jwtService.sign(payload);
     }
 
     verifyToken<T = object>(token: string): Either<ErrorBase, T> {
