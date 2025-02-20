@@ -1,6 +1,7 @@
 import { Either, Left, Right } from "src/core/shared/either";
 import { IUserRepository } from "../../interfaces/repositories/user";
 import { NotExistsError } from "../../errors/general";
+import { ErrorBase } from "src/core/shared/errorBase";
 
 export interface DeleteUserUseCaseInput {
     id: string;
@@ -11,7 +12,7 @@ export class DeleteUserUseCase {
         private readonly userRepository: IUserRepository
     ) {}
 
-    async exec(input: DeleteUserUseCaseInput): Promise<Either<Error, void>> {
+    async exec(input: DeleteUserUseCaseInput): Promise<Either<ErrorBase, void>> {
         const userOrError = await this.userRepository.findById(input.id);
         if (userOrError.left) {
             return Left.create(userOrError.left);

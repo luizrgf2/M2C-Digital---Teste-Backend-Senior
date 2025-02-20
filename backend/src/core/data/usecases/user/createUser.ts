@@ -4,6 +4,7 @@ import { UserEntity } from "src/core/domain/entities/user";
 import { NotExistsError } from "../../errors/general";
 import { UserEmailAlreadyExistsError } from "../../errors/user";
 import { IPasswordEncryptorService } from "../../interfaces/services/passwordEncryptor";
+import { ErrorBase } from "src/core/shared/errorBase";
 
 export interface CreateUserUseCaseInput {
     email: string
@@ -23,13 +24,13 @@ export class CreateUserUseCase {
         private readonly passwordEncryptorService: IPasswordEncryptorService
     ) {}
 
-    private createUserEntity(input: CreateUserUseCaseInput): Either<Error, UserEntity> {
+    private createUserEntity(input: CreateUserUseCaseInput): Either<ErrorBase, UserEntity> {
         const now = new Date()
         const user = UserEntity.createWithoutId({...input, createdAt: now, updatedAt: now})
         return user
     }
 
-    private async checkIfEmailAlreadyExists(email: string): Promise<Either<Error, void>> {
+    private async checkIfEmailAlreadyExists(email: string): Promise<Either<ErrorBase, void>> {
         const userOrError = await this.userRepository.findByEmail(email)
         if (userOrError.left) {
             if (!(userOrError.left instanceof NotExistsError)) {
@@ -40,14 +41,14 @@ export class CreateUserUseCase {
         return Left.create(new UserEmailAlreadyExistsError())
     }
 
-    private async storeUser(user: UserEntity): Promise<Either<Error, UserEntity>> {
+    private async storeUser(user: UserEntity): Promise<Either<ErrorBase, UserEntity>> {
         user.password = await this.passwordEncryptorService.encrypt(user.password)
         const saveOrError = await this.userRepository.create(user)
         if(saveOrError.left) return Left.create(saveOrError.left)
         return Right.create(saveOrError.right)
     }
 
-    async exec(input: CreateUserUseCaseInput): Promise<Either<Error, CreateUserUseCaseOutput> >{
+    async exec(input: CreateUserUseCaseInput): Promise<Either<ErrorBase, CreateUserUseCaseOutput> >{
         const createUserEntityOrError = this.createUserEntity(input)
         if(createUserEntityOrError.left) return Left.create(createUserEntityOrError.left)
         

@@ -4,6 +4,7 @@ import { UserEntity } from "src/core/domain/entities/user";
 import { NotExistsError } from "../../errors/general";
 import { UserEmailAlreadyExistsError } from "../../errors/user";
 import { IPasswordEncryptorService } from "../../interfaces/services/passwordEncryptor";
+import { ErrorBase } from "src/core/shared/errorBase";
 
 
 
@@ -26,7 +27,7 @@ export class UpdateUserUseCase {
         private readonly passwordEncryptorService: IPasswordEncryptorService
     ) {}
 
-    private async checkIfEmailAlreadyExists(email: string, userId: string): Promise<Either<Error, void>> {
+    private async checkIfEmailAlreadyExists(email: string, userId: string): Promise<Either<ErrorBase, void>> {
         const userOrError = await this.userRepository.findByEmail(email);
         if (userOrError.left) {
             if (!(userOrError.left instanceof NotExistsError)) {
@@ -42,7 +43,7 @@ export class UpdateUserUseCase {
         return Right.create(undefined);
     }
 
-    private async storeUser(id: string, update: UpdateUserProps): Promise<Either<Error, UserEntity>> {
+    private async storeUser(id: string, update: UpdateUserProps): Promise<Either<ErrorBase, UserEntity>> {
         const saveOrError = await this.userRepository.update(id, update);
         if (saveOrError.left) return Left.create(saveOrError.left);
         return Right.create(saveOrError.right);
@@ -64,7 +65,7 @@ export class UpdateUserUseCase {
         return toReturn
     }
 
-    async exec(input: UpdateUserUseCaseInput): Promise<Either<Error, UpdateUserUseCaseOutput>> {
+    async exec(input: UpdateUserUseCaseInput): Promise<Either<ErrorBase, UpdateUserUseCaseOutput>> {
         const userOrError = await this.userRepository.findById(input.id);
         if (userOrError.left) return Left.create(userOrError.left);
 

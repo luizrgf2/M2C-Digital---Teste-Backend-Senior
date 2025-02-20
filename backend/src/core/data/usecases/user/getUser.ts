@@ -2,6 +2,7 @@ import { Either, Left, Right } from "src/core/shared/either";
 import { IUserRepository } from "../../interfaces/repositories/user";
 import { UserEntity } from "src/core/domain/entities/user";
 import { UserUpdateAllFieldsIsEmptyError } from "../../errors/user";
+import { ErrorBase } from "src/core/shared/errorBase";
 
 export interface GetUserUseCaseInput {
     id?: string;
@@ -20,8 +21,8 @@ export class GetUserUseCase {
         private readonly userRepository: IUserRepository
     ) {}
 
-    private async getUserFromStore(input: GetUserUseCaseInput) : Promise<Either<Error, UserEntity>> {
-        let userOrError: Either<Error, UserEntity>
+    private async getUserFromStore(input: GetUserUseCaseInput) : Promise<Either<ErrorBase, UserEntity>> {
+        let userOrError: Either<ErrorBase, UserEntity>
 
         if (input.id) {
             userOrError = await this.userRepository.findById(input.id);
@@ -34,7 +35,7 @@ export class GetUserUseCase {
         }
     }
 
-    async exec(input: GetUserUseCaseInput): Promise<Either<Error, GetUserUseCaseOutput>> {
+    async exec(input: GetUserUseCaseInput): Promise<Either<ErrorBase, GetUserUseCaseOutput>> {
         if (!input.id && !input.email) {
             return Left.create(new UserUpdateAllFieldsIsEmptyError());
         }

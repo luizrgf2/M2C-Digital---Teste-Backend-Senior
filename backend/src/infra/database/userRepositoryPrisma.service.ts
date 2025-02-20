@@ -6,12 +6,13 @@ import { IUserRepository, UpdateUserProps } from 'src/core/data/interfaces/repos
 import { NotExistsError } from 'src/core/data/errors/general';
 import { UserPresenter } from '../presenters/userPersenter.service';
 import { ServerError } from 'src/errors/general';
+import { ErrorBase } from 'src/core/shared/errorBase';
 
 @Injectable()
 export class UserRepository implements IUserRepository {
     constructor(private readonly prisma: PrismaService) {}
 
-    async create(user: UserEntity): Promise<Either<Error, UserEntity>> {
+    async create(user: UserEntity): Promise<Either<ErrorBase, UserEntity>> {
         try {
             const createdUser = await this.prisma.user.create({
                 data: {
@@ -29,7 +30,7 @@ export class UserRepository implements IUserRepository {
         }
     }
 
-    async findById(id: string): Promise<Either<Error, UserEntity>> {
+    async findById(id: string): Promise<Either<ErrorBase, UserEntity>> {
         try {
             const user = await this.prisma.user.findUnique({
                 where: {
@@ -46,7 +47,7 @@ export class UserRepository implements IUserRepository {
         }
     }
 
-    async findByEmail(email: string): Promise<Either<Error, UserEntity>> {
+    async findByEmail(email: string): Promise<Either<ErrorBase, UserEntity>> {
         try {
             const user = await this.prisma.user.findUnique({
                 where: {
@@ -63,7 +64,7 @@ export class UserRepository implements IUserRepository {
         }
     }
 
-    async update(id: string, update: UpdateUserProps): Promise<Either<Error, UserEntity>> {
+    async update(id: string, update: UpdateUserProps): Promise<Either<ErrorBase, UserEntity>> {
         try {
             const updatedUser = await this.prisma.user.update({
                 where: {
@@ -81,7 +82,7 @@ export class UserRepository implements IUserRepository {
         }
     }
 
-    async delete(id: string): Promise<Either<Error, void>> {
+    async delete(id: string): Promise<Either<ErrorBase, void>> {
         try {
             await this.prisma.user.update({
                 where: {

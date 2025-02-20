@@ -1,5 +1,6 @@
 import { UserEntity } from "src/core/domain/entities/user";
 import { Either } from "src/core/shared/either";
+import { ErrorBase } from "src/core/shared/errorBase";
 
 export interface UpdateUserProps {
     email?: string
@@ -7,9 +8,9 @@ export interface UpdateUserProps {
 }
 
 export interface IUserRepository {
-    create(user: UserEntity) : Promise<Either<Error, UserEntity>>
-    findById(id: string) : Promise<Either<Error, UserEntity>>
-    findByEmail(email: string): Promise<Either<Error, UserEntity>>
-    update(id: string, update: UpdateUserProps): Promise<Either<Error, UserEntity>>
-    delete(id: string): Promise<Either<Error, void>>
+    create(user: UserEntity) : Promise<Either<ErrorBase, UserEntity>>
+    findById(id: string) : Promise<Either<ErrorBase, UserEntity>>
+    findByEmail(email: string): Promise<Either<ErrorBase, UserEntity>>
+    update(id: string, update: UpdateUserProps): Promise<Either<ErrorBase, UserEntity>>
+    delete(id: string): Promise<Either<ErrorBase, void>>
 }

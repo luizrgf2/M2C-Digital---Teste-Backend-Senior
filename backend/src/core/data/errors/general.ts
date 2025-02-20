@@ -11,3 +11,9 @@ export class NameAlreadyExists extends ErrorBase {
         super("Esse nome já existe!", 409)
     }
 }
+
+export class InvalidCredentialsError extends ErrorBase {
+    constructor() {
+        super("Suas credenciais são inválidas!", 401)
+    }
+}

@@ -1,5 +1,6 @@
 import { Either, Left, Right } from "src/core/shared/either";
 import { UserInvalidEmailError, UserInvalidPasswordLengthError, UserInvalidUpperCaseLetterError } from "../errors/user";
+import { ErrorBase } from "src/core/shared/errorBase";
 
 export interface IUser {
     id: string;
@@ -78,7 +79,7 @@ export class UserEntity {
         return /[A-Z]/.test(this.user.password);
     }
 
-    validate(): Either<Error, void> {
+    validate(): Either<ErrorBase, void> {
         const validateEmail = this.isValidEmail()
         const validatePasswordLen = this.isValidPasswordLength()
         const validatePasswordUpperCaseLetter = this.isValidPasswordUpperCaseLetter()
@@ -90,7 +91,7 @@ export class UserEntity {
         return Right.create(undefined)
     }
 
-    static create(user: Omit<IUser, "deleted">) : Either<Error, UserEntity> {
+    static create(user: Omit<IUser, "deleted">) : Either<ErrorBase, UserEntity> {
         const userEntity = new UserEntity({...user, deleted: false})
         const validOrError = userEntity.validate()
         if(validOrError.left) return Left.create(validOrError.left)
@@ -98,7 +99,7 @@ export class UserEntity {
         return Right.create(userEntity)
     }
 
-    static createWithoutId(user: Omit<IUser, "id" | "deleted">) : Either<Error, UserEntity> {
+    static createWithoutId(user: Omit<IUser, "id" | "deleted">) : Either<ErrorBase, UserEntity> {
         return this.create({...user, id: ""})
     }
 }
