@@ -7,6 +7,7 @@ import { NotExistsError } from 'src/core/data/errors/general';
 import { UserPresenter } from '../presenters/userPersenter.service';
 import { ServerError } from 'src/errors/general';
 import { ErrorBase } from 'src/core/shared/errorBase';
+import { createId } from '@paralleldrive/cuid2';
 
 @Injectable()
 export class UserRepository implements IUserRepository {
@@ -16,7 +17,7 @@ export class UserRepository implements IUserRepository {
         try {
             const createdUser = await this.prisma.user.create({
                 data: {
-                    id: user.id,
+                    id: createId(),
                     email: user.email,
                     password: user.password,
                     created_at: user.createdAt,
