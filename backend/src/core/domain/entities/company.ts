@@ -1,5 +1,6 @@
 import { Either, Left, Right } from "src/core/shared/either";
 import { CompanyInvalidDocumentError, CompanyInvalidNameError } from "../errors/company";
+import { ErrorBase } from "src/core/shared/errorBase";
 
 export interface ICompany {
     id: string;
@@ -65,14 +66,14 @@ export class CompanyEntity {
         return document.length >= 4 && document.length <= 400;
     }
 
-    validate(): Either<Error, void> {
+    validate(): Either<ErrorBase, void> {
         if (!this.isValidName()) return Left.create(new CompanyInvalidNameError());
         if (!this.isValidDocument(this.company.document)) return Left.create(new CompanyInvalidDocumentError());
 
         return Right.create(undefined);
     }
 
-    static create(company: ICompany): Either<Error, CompanyEntity> {
+    static create(company: ICompany): Either<ErrorBase, CompanyEntity> {
         const companyEntity = new CompanyEntity(company);
         const validation = companyEntity.validate();
         if (validation.left) return Left.create(validation.left);
@@ -80,7 +81,7 @@ export class CompanyEntity {
         return Right.create(companyEntity);
     }
 
-    static createWithoutId(company: Omit<ICompany, "id">): Either<Error, CompanyEntity> {
+    static createWithoutId(company: Omit<ICompany, "id">): Either<ErrorBase, CompanyEntity> {
         return this.create({ ...company, id: "" });
     }
 }
