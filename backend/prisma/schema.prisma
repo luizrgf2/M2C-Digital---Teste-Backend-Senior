@@ -15,4 +15,28 @@ model User {
   created_at DateTime @default(now())
   updated_at DateTime @updatedAt
   deleted Boolean @default(false)
+
+  @@index([email])
+  @@map("users")
+}
+
+model Company {
+  id String @id
+  name String
+  document String 
+  create_at  DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  deleted  Boolean @default(false)
+
+  @@map("companies")
+}
+
+model Campaign {
+  id String @id
+  name String 
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+  deleted Boolean
+
+  @@map("campaigns")
 }
