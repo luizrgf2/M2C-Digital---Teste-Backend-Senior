@@ -8,10 +8,6 @@ import { DatabaseModule } from 'src/infra/database/database.module';
 
 @Module({
   imports: [
-    JwtModule.register({
-      secret: process.env.JWT_SECRET || 'defaultSecret',
-      signOptions: { expiresIn: '24h' },
-    }),
     DatabaseModule
   ],
   controllers: [AuthenticationController],
