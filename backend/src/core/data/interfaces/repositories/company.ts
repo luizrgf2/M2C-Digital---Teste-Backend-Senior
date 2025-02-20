@@ -20,6 +20,7 @@ export interface PaginationCompanyOutput {
 export interface ICompanyRepository {
     create(company: CompanyEntity) : Promise<Either<ErrorBase, CompanyEntity>>
     findById(id: string) : Promise<Either<ErrorBase, CompanyEntity>>
+    findByName(name: string) : Promise<Either<ErrorBase, CompanyEntity>>
     findAll(pagination: PaginationCompanyProps): Promise<Either<ErrorBase, PaginationCompanyOutput>>
     update(id: string, update: UpdateCompanyProps): Promise<Either<ErrorBase, CompanyEntity>>
     delete(id: string): Promise<Either<ErrorBase, void>>
