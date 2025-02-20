@@ -4,37 +4,52 @@ import {
     ExecutionContext,
     Injectable,
     UnauthorizedException,
-  } from '@nestjs/common';
-  import { JwtService } from '@nestjs/jwt';
-  import { Request } from 'express';
+} from '@nestjs/common';
+import { JwtService } from '@nestjs/jwt';
+import { Request } from 'express';
+import { SetMetadata } from '@nestjs/common';
+import { Reflector } from '@nestjs/core';
+
+
+
+export const IS_PUBLIC_KEY = 'isPublic';
+export const Public = () => SetMetadata(IS_PUBLIC_KEY, true);
   
-  @Injectable()
-  export class AuthGuard implements CanActivate {
-    constructor(private jwtService: JwtService) {}
-  
-    async canActivate(context: ExecutionContext): Promise<boolean> {
-      const request = context.switchToHttp().getRequest();
-      const token = this.extractTokenFromHeader(request);
-      if (!token) {
+@Injectable()
+export class AuthenticationGuard implements CanActivate {
+    constructor(private jwtService: JwtService, private reflector: Reflector) {}
+
+    async canActivate(context: ExecutionContext, ): Promise<boolean> {
+
+        const isPublic = this.reflector.getAllAndOverride<boolean>(IS_PUBLIC_KEY, [
+            context.getHandler(),
+            context.getClass(),
+        ]);
+        if (isPublic) 
+            return true;
+
+        const request = context.switchToHttp().getRequest();
+        const token = this.extractTokenFromHeader(request);
+        if (!token) {
         throw new UnauthorizedException();
-      }
-      try {
+        }
+        try {
         const payload = await this.jwtService.verifyAsync(
-          token,
-          {
+            token,
+            {
             secret: process.env.JWT_KEY
-          }
+            }
         );
         request['user'] = payload;
-      } catch {
+        } catch {
         throw new UnauthorizedException();
-      }
-      return true;
+        }
+        return true;
     }
-  
+
     private extractTokenFromHeader(request: Request): string | undefined {
-      const token = request.headers.authorization;
-      return token? token : undefined;
+        const token = request.headers.authorization;
+        return token? token : undefined;
     }
-  }
+}
   
