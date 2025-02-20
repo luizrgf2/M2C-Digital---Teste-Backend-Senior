@@ -1,41 +1,27 @@
-import { Injectable } from '@nestjs/common';
-import { CreateAuthenticationDto } from './dto/createAuthentication.dto';
-import { UpdateAuthenticationDto } from './dto/updateAuthentication.dto';
+import { HttpException, Injectable } from '@nestjs/common';
+import { SignInDto } from './dto/signIn.dto';
 import { UserRepository } from 'src/infra/database/userRepositoryPrisma.service';
 import { PasswordEncryptorService } from 'src/infra/services/passwordEncryptor.service';
 import { GetUserUseCase } from 'src/core/data/usecases/user/getUser';
+import { JWTService } from 'src/infra/services/jwt.service';
+import { SignInUseCase } from 'src/core/data/usecases/auth/signIn';
+import { ErrorBase } from 'src/core/shared/errorBase';
 
 @Injectable()
 export class AuthenticationService {
 
-  constructor(private userRepository: UserRepository, private passwordEncryptor: PasswordEncryptorService) {}
+  constructor(private userRepository: UserRepository, private passwordEncryptor: PasswordEncryptorService, private jwtService: JWTService) {}
   
-
-  async signIn(email: string, pass: string): Promise<any> {
-
-      const createUserUseCase = new GetUserUseCase(this.userRepository)
-      const res = await createUserUseCase.exec({id: email})
-
-    const user = await this.usersService.findOne(username);
-    if (user?.password !== pass) {
-      throw new UnauthorizedException();
-    }
-    const { password, ...result } = user;
-    return result;
-  }
-  findAll() {
-    return `This action returns all authentication`;
+  private errorHandling(error?: ErrorBase) {
+    if(error)
+      throw new HttpException(error.message, error.statusCode)
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} authentication`;
+  async signIn(signIn: SignInDto): Promise<any> {
+      const createUserUseCase = new SignInUseCase(this.userRepository, this.passwordEncryptor, this.jwtService)
+      const res = await createUserUseCase.exec(signIn)
+      this.errorHandling(res.left)
+      return res.right;
   }
 
-  update(id: number, updateAuthenticationDto: UpdateAuthenticationDto) {
-    return `This action updates a #${id} authentication`;
-  }
-
-  remove(id: number) {
-    return `This action removes a #${id} authentication`;
-  }
 }

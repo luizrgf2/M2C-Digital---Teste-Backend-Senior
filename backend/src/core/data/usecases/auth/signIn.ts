@@ -1,3 +1,4 @@
+import { ErrorBase } from "src/core/shared/errorBase";
 import { InvalidCredentialsError } from "../../errors/general";
 import { IUserRepository } from "../../interfaces/repositories/user";
 import { IJWTService } from "../../interfaces/services/jwt";
@@ -22,7 +23,7 @@ export class SignInUseCase {
         private readonly jwt: IJWTService
     ) {}
 
-    async exec(input: SignInUseCaseInput): Promise<Either<Error, SignInUseCaseOutput>> {
+    async exec(input: SignInUseCaseInput): Promise<Either<ErrorBase, SignInUseCaseOutput>> {
         const userOrError = await this.userRepository.findByEmail(input.email);
         if (userOrError.left) return Left.create(new InvalidCredentialsError());
 
