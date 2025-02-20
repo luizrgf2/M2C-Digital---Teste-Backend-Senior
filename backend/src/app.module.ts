@@ -1,5 +1,4 @@
 import { Module } from '@nestjs/common';
-import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { ConfigModule } from '@nestjs/config';
 import { UsersModule } from './main/users/users.module';
@@ -20,7 +19,7 @@ import { AuthenticationGuard } from './main/authentication/authentication.guard'
       secret: process.env.JWT_SECRET || 'defaultSecret',
     }),
 ],
-  controllers: [AppController],
+  controllers: [],
   providers: [
     AppService,
     {
