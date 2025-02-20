@@ -28,7 +28,7 @@ export class CompanyRepository implements ICompanyRepository {
             });
             return Right.create(CompanyPresenter.toEntity(createdCompany));
         } catch (error) {
-            return Left.create(new ServerError(`Erro ao criar empresa: ${error.message}`));
+            return Left.create(new ServerError(`Erro ao criar empresa`));
         }
     }
 
@@ -47,7 +47,26 @@ export class CompanyRepository implements ICompanyRepository {
 
             return Right.create(CompanyPresenter.toEntity(company));
         } catch (error) {
-            return Left.create(new ServerError(`Erro ao buscar empresa por ID: ${error.message}`));
+            return Left.create(new ServerError(`Erro ao buscar empresa por ID`));
+        }
+    }
+
+    async findByName(name: string): Promise<Either<ErrorBase, CompanyEntity>> {
+        try {
+            const company = await this.prisma.company.findFirst({
+                where: {
+                    name: name,
+                    deleted: false,
+                },
+            });
+
+            if (!company) {
+                return Left.create(new NotExistsError());
+            }
+
+            return Right.create(CompanyPresenter.toEntity(company));
+        } catch (error) {
+            return Left.create(new ServerError(`Erro ao buscar empresa por Nome`));
         }
     }
 
@@ -69,7 +88,7 @@ export class CompanyRepository implements ICompanyRepository {
                 count,
             });
         } catch (error) {
-            return Left.create(new ServerError(`Erro ao buscar empresas: ${error.message}`));
+            return Left.create(new ServerError(`Erro ao buscar empresas`));
         }
     }
 
@@ -88,7 +107,7 @@ export class CompanyRepository implements ICompanyRepository {
 
             return Right.create(CompanyPresenter.toEntity(updatedCompany));
         } catch (error) {
-            return Left.create(new ServerError(`Erro ao atualizar empresa: ${error.message}`));
+            return Left.create(new ServerError(`Erro ao atualizar empresa`));
         }
     }
 
@@ -106,7 +125,7 @@ export class CompanyRepository implements ICompanyRepository {
 
             return Right.create(undefined);
         } catch (error) {
-            return Left.create(new ServerError(`Erro ao deletar empresa: ${error.message}`));
+            return Left.create(new ServerError(`Erro ao deletar empresa`));
         }
     }
 }
