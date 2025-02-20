@@ -24,8 +24,8 @@ model Company {
   id String @id
   name String
   document String 
-  create_at  DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  created_at  DateTime @default(now())
+  updated_at DateTime @updatedAt
   deleted  Boolean @default(false)
 
   @@map("companies")
