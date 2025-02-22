@@ -7,7 +7,6 @@ import { APP_GUARD } from '@nestjs/core';
 import { AuthenticationGuard } from './main/authentication/authentication.guard';
 import { CompanyModule } from './main/company/company.module';
 import { CampaignModule } from './main/campaign/campaign.module';
-import { MongooseModule } from '@nestjs/mongoose';
 
 @Module({
   imports: [
@@ -18,7 +17,6 @@ import { MongooseModule } from '@nestjs/mongoose';
       global: true,
       secret: process.env.JWT_SECRET || 'defaultSecret',
     }),
-    MongooseModule.forRoot('mongodb://localhost/nest'),
     UsersModule, 
     AuthenticationModule,
     CompanyModule,
