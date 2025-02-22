@@ -1,5 +1,6 @@
 import { Either, Left, Right } from "src/core/shared/either";
 import { MessageInvalidPhoneNumberError, MessageInvalidContentLengthError } from "../errors/message";
+import { ErrorBase } from "src/core/shared/errorBase";
 
 export interface IMessage {
     id: string;
@@ -83,14 +84,14 @@ export class MessageEntity {
         return this.message.message.length >= 10 && this.message.message.length <= 400;
     }
 
-    validate(): Either<Error, void> {
+    validate(): Either<ErrorBase, void> {
         if (!this.isValidPhoneNumber()) return Left.create(new MessageInvalidPhoneNumberError());
         if (!this.isValidMessageLength()) return Left.create(new MessageInvalidContentLengthError());
 
         return Right.create(undefined);
     }
 
-    static create(message: IMessage): Either<Error, MessageEntity> {
+    static create(message: IMessage): Either<ErrorBase, MessageEntity> {
         const messageEntity = new MessageEntity(message);
         const validation = messageEntity.validate();
         if (validation.left) return Left.create(validation.left);
@@ -98,7 +99,7 @@ export class MessageEntity {
         return Right.create(messageEntity);
     }
 
-    static createWithoutId(message: Omit<IMessage, "id">): Either<Error, MessageEntity> {
+    static createWithoutId(message: Omit<IMessage, "id">): Either<ErrorBase, MessageEntity> {
         return this.create({ ...message, id: "" });
     }
 }
