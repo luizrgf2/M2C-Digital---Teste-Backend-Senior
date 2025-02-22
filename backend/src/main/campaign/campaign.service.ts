@@ -8,11 +8,13 @@ import { DeleteCampaignUseCase } from 'src/core/data/usecases/campaign/deleteCam
 import { UpdateCampaignUseCase } from 'src/core/data/usecases/campaign/updateCampaign';
 import { ErrorBase } from 'src/core/shared/errorBase';
 import { CreateCampaignDto } from './dto/createCampaign.dto';
+import { MessageProducerService } from 'src/infra/services/rabbitmq/messageProducer.service';
 
 @Injectable()
 export class CampaignService {
   constructor(
-    private readonly campaignRepository: CampaignRepository
+    private readonly campaignRepository: CampaignRepository,
+    private readonly messageProducer: MessageProducerService
   ){}
 
   private errorHandling(error?: ErrorBase) {
@@ -21,9 +23,9 @@ export class CampaignService {
     }
   }
 
-  async create(createCampaignDto: CreateCampaignDto) {
-    const usecase = new CreateCampaignUseCase(this.campaignRepository);
-    const res = await usecase.exec(createCampaignDto);
+  async create(createCampaignDto: CreateCampaignDto, fileText: string) {
+    const usecase = new CreateCampaignUseCase(this.campaignRepository, this.messageProducer);
+    const res = await usecase.exec({...createCampaignDto, listNumbers: fileText});
     this.errorHandling(res.left);
     return res.right;
   }
