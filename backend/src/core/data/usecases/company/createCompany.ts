@@ -8,12 +8,14 @@ import { CompanyNameAlreadyExistsError } from "../../errors/company";
 export interface CreateCompanyUseCaseInput {
     name: string;
     document: string;
+    userId: string;
 }
 
 export interface CreateCompanyUseCaseOutput {
     id: string;
     name: string;
     document: string;
+    userId: string;
     createdAt: Date;
     updatedAt: Date;
 }
@@ -28,8 +30,8 @@ export class CreateCompanyUseCase {
         return company;
     }
 
-    private async checkIfCompanyNameExists(name: string): Promise<Either<ErrorBase, void>> {
-        const companyOrError = await this.companyRepository.findByName(name);
+    private async checkIfCompanyNameExists(name: string, userId: string): Promise<Either<ErrorBase, void>> {
+        const companyOrError = await this.companyRepository.findByName(name, userId);
         if (companyOrError.left) {
             if (!(companyOrError.left instanceof NotExistsError)) {
                 return Left.create(companyOrError.left);
@@ -46,7 +48,7 @@ export class CreateCompanyUseCase {
     }
 
     async exec(input: CreateCompanyUseCaseInput): Promise<Either<ErrorBase, CreateCompanyUseCaseOutput>> {
-        const companyNameExistsOrError = await this.checkIfCompanyNameExists(input.name);
+        const companyNameExistsOrError = await this.checkIfCompanyNameExists(input.name, input.userId);
         if (companyNameExistsOrError.left) return Left.create(companyNameExistsOrError.left);
 
         const createCompanyEntityOrError = this.createCompanyEntity(input);
@@ -59,6 +61,7 @@ export class CreateCompanyUseCase {
             id: saveCompanyOrError.right.id,
             name: saveCompanyOrError.right.name,
             document: saveCompanyOrError.right.document,
+            userId: saveCompanyOrError.right.userId as string,
             createdAt: saveCompanyOrError.right.createdAt,
             updatedAt: saveCompanyOrError.right.updatedAt,
         });

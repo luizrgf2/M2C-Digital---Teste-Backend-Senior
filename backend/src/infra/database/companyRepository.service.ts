@@ -22,6 +22,7 @@ export class CompanyRepository implements ICompanyRepository {
                     name: company.name,
                     document: company.document,
                     created_at: company.createdAt,
+                    user_id: company.userId as string,
                     updated_at: company.updatedAt,
                     deleted: false,
                 },
@@ -32,11 +33,12 @@ export class CompanyRepository implements ICompanyRepository {
         }
     }
 
-    async findById(id: string): Promise<Either<ErrorBase, CompanyEntity>> {
+    async findById(id: string, userId: string): Promise<Either<ErrorBase, CompanyEntity>> {
         try {
             const company = await this.prisma.company.findUnique({
                 where: {
                     id,
+                    user_id: userId,
                     deleted: false,
                 },
             });
@@ -51,11 +53,12 @@ export class CompanyRepository implements ICompanyRepository {
         }
     }
 
-    async findByName(name: string): Promise<Either<ErrorBase, CompanyEntity>> {
+    async findByName(name: string, userId: string): Promise<Either<ErrorBase, CompanyEntity>> {
         try {
             const company = await this.prisma.company.findFirst({
                 where: {
                     name: name,
+                    user_id: userId,
                     deleted: false,
                 },
             });
@@ -70,11 +73,11 @@ export class CompanyRepository implements ICompanyRepository {
         }
     }
 
-    async findAll(pagination: PaginationCompanyProps): Promise<Either<ErrorBase, PaginationCompanyOutput>> {
+    async findAll(pagination: PaginationCompanyProps, userId: string): Promise<Either<ErrorBase, PaginationCompanyOutput>> {
         try {
             const [companies, count] = await this.prisma.$transaction([
                 this.prisma.company.findMany({
-                    where: { deleted: false },
+                    where: { deleted: false, user_id: userId },
                     take: pagination.size,
                     skip: pagination.skip,
                 }),
@@ -92,11 +95,12 @@ export class CompanyRepository implements ICompanyRepository {
         }
     }
 
-    async update(id: string, update: UpdateCompanyProps): Promise<Either<ErrorBase, CompanyEntity>> {
+    async update(id: string, userId: string, update: UpdateCompanyProps): Promise<Either<ErrorBase, CompanyEntity>> {
         try {
             const updatedCompany = await this.prisma.company.update({
                 where: {
                     id,
+                    user_id: userId,
                     deleted: false,
                 },
                 data: {
@@ -111,12 +115,13 @@ export class CompanyRepository implements ICompanyRepository {
         }
     }
 
-    async delete(id: string): Promise<Either<ErrorBase, void>> {
+    async delete(id: string, userId: string): Promise<Either<ErrorBase, void>> {
         try {
             await this.prisma.company.update({
                 where: {
                     id,
                     deleted: false,
+                    user_id: userId
                 },
                 data: {
                     deleted: true,

@@ -5,6 +5,7 @@ import { ErrorBase } from "src/core/shared/errorBase";
 export interface GetAllCompaniesUseCaseInput {
     size?: number;
     skip?: number;
+    userId: string;
 }
 
 export interface GetAllCompaniesUseCaseOutput {
@@ -30,7 +31,7 @@ export class GetAllCompaniesUseCase {
             skip: input.skip ?? this.DEFAULT_SKIP
         };
 
-        const companiesOrError = await this.companyRepository.findAll(pagination);
+        const companiesOrError = await this.companyRepository.findAll(pagination, input.userId);
         if (companiesOrError.left) return Left.create(companiesOrError.left);
 
         const { companies, count } = companiesOrError.right;

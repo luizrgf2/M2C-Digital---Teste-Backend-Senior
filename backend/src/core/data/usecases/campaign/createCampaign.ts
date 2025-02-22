@@ -28,7 +28,7 @@ export class CreateCampaignUseCase {
 
     private createCampaignEntity(input: CreateCampaignUseCaseInput): Either<ErrorBase, CampaignEntity> {
         const now = new Date();
-        const campaign = CampaignEntity.createWithoutId({ ...input, createdAt: now, updatedAt: now, deleted: false });
+        const campaign = CampaignEntity.createWithoutId({ ...input, createdAt: now, updatedAt: now, deleted: false, finalized: false});
         return campaign;
     }
 

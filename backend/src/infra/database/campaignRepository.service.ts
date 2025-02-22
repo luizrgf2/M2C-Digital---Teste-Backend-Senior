@@ -18,6 +18,8 @@ export class CampaignRepository implements ICampaignRepository {
                 data: {
                     id: createId(),
                     name: campaign.name,
+                    finalized: false,
+                    company_id: campaign.companyId as string,
                     created_at: campaign.createdAt,
                     updated_at: campaign.updatedAt,
                     deleted: false,

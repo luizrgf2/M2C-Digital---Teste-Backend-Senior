@@ -6,8 +6,10 @@ export class CampaignPresenter {
         return new CampaignEntity({
             id: model.id,
             name: model.name,
+            finalized: model.finalized,
             createdAt: model.created_at,
             updatedAt: model.updated_at,
+            companyId: model.companyId ? model.companyId : undefined,
             deleted: model.deleted,
         });
     }
@@ -18,6 +20,8 @@ export class CampaignPresenter {
             name: entity.name,
             createdAt: entity.createdAt,
             updatedAt: entity.updatedAt,
+            finalized: entity.finalized,
+            companyId: entity.companyId  ? entity.companyId : undefined,
             deleted: entity.deleted,
         };
     }

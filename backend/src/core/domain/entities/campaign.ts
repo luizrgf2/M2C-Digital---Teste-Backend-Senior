@@ -5,6 +5,8 @@ import { ErrorBase } from "src/core/shared/errorBase";
 export interface ICampaign {
     id: string;
     name: string;
+    finalized: boolean,
+    companyId?: string,
     createdAt: Date;
     updatedAt: Date;
     deleted: boolean;
@@ -33,6 +35,10 @@ export class CampaignEntity {
         this.campaign.name = name;
     }
 
+    get finalized(): boolean {
+        return this.campaign.finalized
+    }
+
     get createdAt(): Date {
         return this.campaign.createdAt;
     }
@@ -43,6 +49,10 @@ export class CampaignEntity {
 
     get deleted(): boolean {
         return this.campaign.deleted;
+    }
+
+    get companyId(): string | undefined {
+        return this.campaign.companyId
     }
 
     set deleted(deleted: boolean) {

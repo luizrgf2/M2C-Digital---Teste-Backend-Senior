@@ -6,6 +6,7 @@ export interface ICompany {
     id: string;
     name: string;
     document: string;
+    userId?: string;
     createdAt: Date;
     updatedAt: Date;
     deleted: boolean;
@@ -48,6 +49,10 @@ export class CompanyEntity {
 
     get updatedAt(): Date {
         return this.company.updatedAt;
+    }
+
+    get userId(): string | undefined {
+        return this.company.userId
     }
 
     get deleted(): boolean {

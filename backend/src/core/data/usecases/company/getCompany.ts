@@ -7,6 +7,7 @@ import { NotExistsError } from "../../errors/general";
 export interface GetCompanyUseCaseInput {
     id?: string;
     name?: string;
+    userId: string
 }
 
 export interface GetCompanyUseCaseOutput {
@@ -22,9 +23,9 @@ export class GetCompanyUseCase {
 
     private async findCompany(input: GetCompanyUseCaseInput): Promise<Either<ErrorBase, CompanyEntity>> {
         if (input.id) {
-            return this.companyRepository.findById(input.id);
+            return this.companyRepository.findById(input.id, input.userId);
         } else if (input.name) {
-            return this.companyRepository.findByName(input.name);
+            return this.companyRepository.findByName(input.name, input.userId);
         }
         return Left.create(new NotExistsError());
     }

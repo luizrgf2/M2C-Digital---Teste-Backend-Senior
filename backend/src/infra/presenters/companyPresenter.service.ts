@@ -7,6 +7,7 @@ export class CompanyPresenter {
             id: model.id,
             name: model.name,
             document: model.document,
+            userId: model.user_id,
             createdAt: model.created_at,
             updatedAt: model.updated_at,
             deleted: model.deleted,
@@ -19,6 +20,7 @@ export class CompanyPresenter {
             name: entity.name,
             document: entity.document,
             created_at: entity.createdAt,
+            user_id: !entity.userId ? "": entity.userId,
             updated_at: entity.updatedAt,
             deleted: entity.deleted,
         };
