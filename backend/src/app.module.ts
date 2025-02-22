@@ -1,5 +1,4 @@
 import { Module } from '@nestjs/common';
-import { AppService } from './app.service';
 import { ConfigModule } from '@nestjs/config';
 import { UsersModule } from './main/users/users.module';
 import { AuthenticationModule } from './main/authentication/authentication.module';
@@ -8,24 +7,25 @@ import { APP_GUARD } from '@nestjs/core';
 import { AuthenticationGuard } from './main/authentication/authentication.guard';
 import { CompanyModule } from './main/company/company.module';
 import { CampaignModule } from './main/campaign/campaign.module';
+import { MongooseModule } from '@nestjs/mongoose';
 
 @Module({
   imports: [
     ConfigModule.forRoot({
       isGlobal: true
     }), 
-    UsersModule, 
-    AuthenticationModule,
     JwtModule.register({
       global: true,
       secret: process.env.JWT_SECRET || 'defaultSecret',
     }),
+    MongooseModule.forRoot('mongodb://localhost/nest'),
+    UsersModule, 
+    AuthenticationModule,
     CompanyModule,
     CampaignModule,
 ],
   controllers: [],
   providers: [
-    AppService,
     {
       provide: APP_GUARD,
       useClass: AuthenticationGuard,
