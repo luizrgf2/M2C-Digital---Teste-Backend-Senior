@@ -7,6 +7,7 @@ import { GetCompanyUseCase } from 'src/core/data/usecases/company/getCompany';
 import { UpdateCompanyProps } from 'src/core/data/interfaces/repositories/company';
 import { DeleteCompanyUseCase } from 'src/core/data/usecases/company/deleteCompany';
 import { UpdateCompanyUseCase } from 'src/core/data/usecases/company/updateCompany';
+import { ErrorBase } from 'src/core/shared/errorBase';
 
 @Injectable()
 export class CompanyService {
@@ -15,10 +16,15 @@ export class CompanyService {
     private readonly companyRepository: CompanyRepository
   ){}
 
+  private errorHandling(error?: ErrorBase) {
+      if(error)
+        throw new HttpException(error.message, error.statusCode)
+  }
+  
   async create(createCompanyDto: CreateCompanyDto) {
     const usecase = new CreateCompanyUseCase(this.companyRepository)
     const res = await usecase.exec(createCompanyDto)
-    if(res.left) throw new HttpException(res.left.message, res.left.statusCode)
+    this.errorHandling(res.left)
     return res.right
   }
 
@@ -28,28 +34,28 @@ export class CompanyService {
       size,
       skip
     })
-    if(res.left) throw new HttpException(res.left.message, res.left.statusCode)
+    this.errorHandling(res.left)
     return res.right
   }
 
   async findOne(id: string) {
     const usecase = new GetCompanyUseCase(this.companyRepository)
     const res = await usecase.exec({id: id})
-    if(res.left) throw new HttpException(res.left.message, res.left.statusCode)
+    this.errorHandling(res.left)
     return res.right
   }
 
   async update(id: string, updateCompanyDto: UpdateCompanyProps) {
     const usecase = new UpdateCompanyUseCase(this.companyRepository)
     const res = await usecase.exec({id: id, ...updateCompanyDto})
-    if(res.left) throw new HttpException(res.left.message, res.left.statusCode)
+    this.errorHandling(res.left)
     return res.right
   }
 
   async remove(id: string) {
     const usecase = new DeleteCompanyUseCase(this.companyRepository)
     const res = await usecase.exec({id})
-    if(res.left) throw new HttpException(res.left.message, res.left.statusCode)
+    this.errorHandling(res.left)
     return res.right
   }
 }
