@@ -6,6 +6,7 @@ import { NotExistsError } from "../../errors/general";
 
 export interface GetCampaignUseCaseInput {
     id: string;
+    companyId: string;
 }
 
 export interface GetCampaignUseCaseOutput {
@@ -19,7 +20,7 @@ export class GetCampaignUseCase {
     constructor(private readonly campaignRepository: ICampaignRepository) {}
 
     async exec(input: GetCampaignUseCaseInput): Promise<Either<ErrorBase, GetCampaignUseCaseOutput>> {
-        const campaignOrError = await this.campaignRepository.findById(input.id);
+        const campaignOrError = await this.campaignRepository.findById(input.id, input.companyId);
         if (campaignOrError.left) return Left.create(campaignOrError.left);
 
         const campaign = campaignOrError.right;

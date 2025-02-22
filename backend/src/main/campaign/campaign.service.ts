@@ -23,40 +23,41 @@ export class CampaignService {
     }
   }
 
-  async create(createCampaignDto: CreateCampaignDto, fileText: string) {
+  async create(createCampaignDto: CreateCampaignDto, fileText: string, companyId: string) {
     const usecase = new CreateCampaignUseCase(this.campaignRepository, this.messageProducer);
     const res = await usecase.exec({...createCampaignDto, listNumbers: fileText});
     this.errorHandling(res.left);
     return res.right;
   }
 
-  async findAll(size: number, skip: number) {
+  async findAll(size: number, skip: number, companyId: string) {
     const usecase = new GetAllCampaignsUseCase(this.campaignRepository);
     const res = await usecase.exec({
       size,
-      skip
+      skip,
+      companyId
     });
     this.errorHandling(res.left);
     return res.right;
   }
 
-  async findOne(id: string) {
+  async findOne(id: string, companyId: string) {
     const usecase = new GetCampaignUseCase(this.campaignRepository);
-    const res = await usecase.exec({ id });
+    const res = await usecase.exec({ id, companyId});
     this.errorHandling(res.left);
     return res.right;
   }
 
-  async update(id: string, updateCampaignDto: UpdateCampaignProps) {
+  async update(id: string, companyId: string, updateCampaignDto: UpdateCampaignProps) {
     const usecase = new UpdateCampaignUseCase(this.campaignRepository);
-    const res = await usecase.exec({ id, ...updateCampaignDto });
+    const res = await usecase.exec({ id, companyId, ...updateCampaignDto });
     this.errorHandling(res.left);
     return res.right;
   }
 
-  async remove(id: string) {
+  async remove(id: string, companyId: string) {
     const usecase = new DeleteCampaignUseCase(this.campaignRepository);
-    const res = await usecase.exec({ id });
+    const res = await usecase.exec({ id , companyId});
     this.errorHandling(res.left);
     return res.right;
   }

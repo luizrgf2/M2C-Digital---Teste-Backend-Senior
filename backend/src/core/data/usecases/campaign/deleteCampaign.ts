@@ -5,16 +5,17 @@ import { NotExistsError } from "../../errors/general";
 
 export interface DeleteCampaignUseCaseInput {
     id: string;
+    companyId: string;
 }
 
 export class DeleteCampaignUseCase {
     constructor(private readonly campaignRepository: ICampaignRepository) {}
 
     async exec(input: DeleteCampaignUseCaseInput): Promise<Either<ErrorBase, void>> {
-        const campaignOrError = await this.campaignRepository.findById(input.id);
+        const campaignOrError = await this.campaignRepository.findById(input.id, input.companyId);
         if (campaignOrError.left) return Left.create(new NotExistsError());
 
-        const deleteOrError = await this.campaignRepository.delete(input.id);
+        const deleteOrError = await this.campaignRepository.delete(input.id, input.companyId);
         if (deleteOrError.left) return Left.create(deleteOrError.left);
 
         return Right.create(undefined);

@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { Either, Left, Right } from 'src/core/shared/either';
 import { PrismaService } from './prisma.service';
-import { ICampaignRepository, UpdateCampaignProps } from 'src/core/data/interfaces/repositories/campaign';
+import { ICampaignRepository, PaginationCampaignProps, UpdateCampaignProps } from 'src/core/data/interfaces/repositories/campaign';
 import { NotExistsError } from 'src/core/data/errors/general';
 import { ServerError } from 'src/errors/general';
 import { ErrorBase } from 'src/core/shared/errorBase';
@@ -31,12 +31,13 @@ export class CampaignRepository implements ICampaignRepository {
         }
     }
 
-    async findById(id: string): Promise<Either<ErrorBase, CampaignEntity>> {
+    async findById(id: string, companyId: string): Promise<Either<ErrorBase, CampaignEntity>> {
         try {
             const campaign = await this.prisma.campaign.findUnique({
                 where: {
                     id,
                     deleted: false,
+                    company_id: companyId
                 },
             });
             if (!campaign) {
@@ -48,12 +49,13 @@ export class CampaignRepository implements ICampaignRepository {
         }
     }
 
-    async findByName(name: string): Promise<Either<ErrorBase, CampaignEntity>> {
+    async findByName(name: string, companyId: string): Promise<Either<ErrorBase, CampaignEntity>> {
         try {
             const campaign = await this.prisma.campaign.findFirst({
                 where: {
                     name,
                     deleted: false,
+                    company_id: companyId
                 },
             });
             if (!campaign) {
@@ -65,11 +67,11 @@ export class CampaignRepository implements ICampaignRepository {
         }
     }
 
-    async findAll(pagination: { size: number; skip: number }): Promise<Either<ErrorBase, { campaigns: CampaignEntity[]; count: number }>> {
+    async findAll(pagination: PaginationCampaignProps, companyId: string): Promise<Either<ErrorBase, { campaigns: CampaignEntity[]; count: number }>> {
         try {
             const [campaigns, count] = await this.prisma.$transaction([
                 this.prisma.campaign.findMany({
-                    where: { deleted: false },
+                    where: { deleted: false, company_id: companyId },
                     take: pagination.size,
                     skip: pagination.skip,
                 }),
@@ -81,12 +83,13 @@ export class CampaignRepository implements ICampaignRepository {
         }
     }
 
-    async update(id: string, update: UpdateCampaignProps): Promise<Either<ErrorBase, CampaignEntity>> {
+    async update(id: string, companyId: string, update: UpdateCampaignProps): Promise<Either<ErrorBase, CampaignEntity>> {
         try {
             const updatedCampaign = await this.prisma.campaign.update({
                 where: {
                     id,
                     deleted: false,
+                    company_id: companyId
                 },
                 data: {
                     ...update,
@@ -99,7 +102,7 @@ export class CampaignRepository implements ICampaignRepository {
         }
     }
 
-    async delete(id: string): Promise<Either<ErrorBase, void>> {
+    async delete(id: string, companyId: string): Promise<Either<ErrorBase, void>> {
         try {
             await this.prisma.campaign.update({
                 where: {

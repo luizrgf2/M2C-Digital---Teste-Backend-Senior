@@ -5,6 +5,7 @@ import { ErrorBase } from "src/core/shared/errorBase";
 export interface GetAllCampaignsUseCaseInput {
     size?: number;
     skip?: number;
+    companyId: string
 }
 
 export interface GetAllCampaignsUseCaseOutput {
@@ -29,7 +30,7 @@ export class GetAllCampaignsUseCase {
             skip: input.skip ?? this.DEFAULT_SKIP
         };
 
-        const campaignsOrError = await this.campaignRepository.findAll(pagination);
+        const campaignsOrError = await this.campaignRepository.findAll(pagination, input.companyId);
         if (campaignsOrError.left) return Left.create(campaignsOrError.left);
 
         const { campaigns, count } = campaignsOrError.right;

@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, Query, Put, UseInterceptors, UploadedFile, HttpException } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, Query, Put, UseInterceptors, UploadedFile, HttpException, Request } from '@nestjs/common';
 import { CampaignService } from './campaign.service';
 import { CreateCampaignDto } from './dto/createCampaign.dto';
 import { UpdateCampaignDto } from './dto/updateCampaign.dto';
@@ -10,28 +10,28 @@ export class CampaignController {
 
   @Post()
   @UseInterceptors(FileInterceptor('file'))
-  create(@UploadedFile() file: Express.Multer.File, @Body() createCompanyDto: CreateCampaignDto) {
+  create(@UploadedFile() file: Express.Multer.File, @Body() createCompanyDto: CreateCampaignDto, @Request() req: ReqProps) {
     if(file.mimetype !== "text/plain") throw new HttpException("O arquivo tem que ser em formato texto", 400)
-    return this.campaignService.create(createCompanyDto, file.buffer.toString());
+    return this.campaignService.create(createCompanyDto, file.buffer.toString(), req.user?.id as string);
   }
 
   @Get()
-  findAll(@Query("size") size: string, @Query("skip") skip: string) {
-    return this.campaignService.findAll(+size, +skip);
+  findAll(@Query("size") size: string, @Query("skip") skip: string, @Request() req: ReqProps) {
+    return this.campaignService.findAll(+size, +skip, req.user?.id as string);
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.campaignService.findOne(id);
+  findOne(@Param('id') id: string, @Request() req: ReqProps) {
+    return this.campaignService.findOne(id, req.user?.id as string);
   }
 
   @Put(':id')
-  update(@Param('id') id: string, @Body() updateCompanyDto: UpdateCampaignDto) {
-    return this.campaignService.update(id, updateCompanyDto);
+  update(@Param('id') id: string, @Body() updateCompanyDto: UpdateCampaignDto, @Request() req: ReqProps) {
+    return this.campaignService.update(id, req.user?.id as string, updateCompanyDto);
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.campaignService.remove(id);
+  remove(@Param('id') id: string, @Request() req: ReqProps) {
+    return this.campaignService.remove(id, req.user?.id as string);
   }
 }
