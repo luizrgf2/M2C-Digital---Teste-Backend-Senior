@@ -23,7 +23,7 @@ export class CampaignRepository implements ICampaignRepository {
                     deleted: false,
                 },
             });
-            return Right.create(CampaignPresenter.toEntity(CampaignPresenter.toEntity(createdCampaign)))
+            return Right.create(CampaignPresenter.toEntity(createdCampaign))
         } catch (error) {
             return Left.create(new ServerError(`Erro ao criar campanha`));
         }
@@ -40,7 +40,7 @@ export class CampaignRepository implements ICampaignRepository {
             if (!campaign) {
                 return Left.create(new NotExistsError());
             }
-            return Right.create(CampaignPresenter.toEntity(CampaignPresenter.toEntity(campaign)))
+            return Right.create(CampaignPresenter.toEntity(campaign))
         } catch (error) {
             return Left.create(new ServerError(`Erro ao buscar campanha por ID`));
         }
@@ -57,7 +57,7 @@ export class CampaignRepository implements ICampaignRepository {
             if (!campaign) {
                 return Left.create(new NotExistsError());
             }
-            return Right.create(CampaignPresenter.toEntity(CampaignPresenter.toEntity(campaign)))
+            return Right.create(CampaignPresenter.toEntity(campaign))
         } catch (error) {
             return Left.create(new ServerError(`Erro ao buscar campanha por nome`));
         }
