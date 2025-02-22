@@ -8,8 +8,9 @@ export class CampaignPresenter {
             name: model.name,
             finalized: model.finalized,
             createdAt: model.created_at,
+            userId: model.user_id || undefined,
             updatedAt: model.updated_at,
-            companyId: model.companyId ? model.companyId : undefined,
+            companyId: model.company_id ? model.company_id : undefined,
             deleted: model.deleted,
         });
     }
@@ -21,6 +22,7 @@ export class CampaignPresenter {
             createdAt: entity.createdAt,
             updatedAt: entity.updatedAt,
             finalized: entity.finalized,
+            userId: entity.userId || undefined,
             companyId: entity.companyId  ? entity.companyId : undefined,
             deleted: entity.deleted,
         };

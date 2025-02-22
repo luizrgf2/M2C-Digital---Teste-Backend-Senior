@@ -7,6 +7,7 @@ export interface ICampaign {
     name: string;
     finalized: boolean,
     companyId?: string,
+    userId?: string,
     createdAt: Date;
     updatedAt: Date;
     deleted: boolean;
@@ -53,6 +54,10 @@ export class CampaignEntity {
 
     get companyId(): string | undefined {
         return this.campaign.companyId
+    }
+
+    get userId(): string | undefined {
+        return this.campaign.userId
     }
 
     set deleted(deleted: boolean) {

@@ -7,11 +7,14 @@ import { NotExistsError } from "../../errors/general";
 export interface GetCampaignUseCaseInput {
     id: string;
     companyId: string;
+    userId: string;
 }
 
 export interface GetCampaignUseCaseOutput {
     id: string;
     name: string;
+    companyId: string;
+    userId: string;
     createdAt: Date;
     updatedAt: Date;
 }
@@ -20,7 +23,7 @@ export class GetCampaignUseCase {
     constructor(private readonly campaignRepository: ICampaignRepository) {}
 
     async exec(input: GetCampaignUseCaseInput): Promise<Either<ErrorBase, GetCampaignUseCaseOutput>> {
-        const campaignOrError = await this.campaignRepository.findById(input.id, input.companyId);
+        const campaignOrError = await this.campaignRepository.findById(input.id, input.companyId, input.userId);
         if (campaignOrError.left) return Left.create(campaignOrError.left);
 
         const campaign = campaignOrError.right;
@@ -28,6 +31,8 @@ export class GetCampaignUseCase {
         return Right.create({
             id: campaign.id,
             name: campaign.name,
+            companyId: campaign.companyId || "",
+            userId: campaign.userId || "",
             createdAt: campaign.createdAt,
             updatedAt: campaign.updatedAt,
         });

@@ -6,9 +6,6 @@ export class CreateCampaignDto {
     name: string
     @IsNotEmpty()
     @IsString()
-    userId: string;
-    @IsNotEmpty()
-    @IsString()
     companyId: string;
     @IsNotEmpty()
     @IsString()

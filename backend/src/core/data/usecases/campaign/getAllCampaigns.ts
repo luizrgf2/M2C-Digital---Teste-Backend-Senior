@@ -5,13 +5,16 @@ import { ErrorBase } from "src/core/shared/errorBase";
 export interface GetAllCampaignsUseCaseInput {
     size?: number;
     skip?: number;
-    companyId: string
+    companyId: string;
+    userId: string;
 }
 
 export interface GetAllCampaignsUseCaseOutput {
     campaigns: {
         id: string;
         name: string;
+        userId: string,
+        companyId: string,
         createdAt: Date;
         updatedAt: Date;
     }[];
@@ -30,7 +33,7 @@ export class GetAllCampaignsUseCase {
             skip: input.skip ?? this.DEFAULT_SKIP
         };
 
-        const campaignsOrError = await this.campaignRepository.findAll(pagination, input.companyId);
+        const campaignsOrError = await this.campaignRepository.findAll(pagination, input.companyId, input.userId);
         if (campaignsOrError.left) return Left.create(campaignsOrError.left);
 
         const { campaigns, count } = campaignsOrError.right;
@@ -39,6 +42,8 @@ export class GetAllCampaignsUseCase {
             campaigns: campaigns.map(campaign => ({
                 id: campaign.id,
                 name: campaign.name,
+                companyId: campaign.companyId || "",
+                userId: campaign.userId || "",
                 createdAt: campaign.createdAt,
                 updatedAt: campaign.updatedAt,
             })),

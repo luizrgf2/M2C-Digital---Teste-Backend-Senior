@@ -15,23 +15,23 @@ export class CampaignController {
     return this.campaignService.create(createCompanyDto, file.buffer.toString(), req.user?.id as string);
   }
 
-  @Get()
-  findAll(@Query("size") size: string, @Query("skip") skip: string, @Request() req: ReqProps) {
-    return this.campaignService.findAll(+size, +skip, req.user?.id as string);
+  @Get(':companyId')
+  findAll( @Param('companyId') companyId: string, @Query("size") size: string, @Query("skip") skip: string, @Request() req: ReqProps) {
+    return this.campaignService.findAll(+size, +skip, companyId, req.user?.id as string);
   }
 
-  @Get(':id')
-  findOne(@Param('id') id: string, @Request() req: ReqProps) {
-    return this.campaignService.findOne(id, req.user?.id as string);
+  @Get(':id/:companyId')
+  findOne(@Param('id') id: string, @Param('companyId') companyId: string, @Request() req: ReqProps) {
+    return this.campaignService.findOne(id, companyId, req.user?.id as string);
   }
 
-  @Put(':id')
-  update(@Param('id') id: string, @Body() updateCompanyDto: UpdateCampaignDto, @Request() req: ReqProps) {
-    return this.campaignService.update(id, req.user?.id as string, updateCompanyDto);
+  @Put(':id/:companyId')
+  update(@Param('id') id: string, @Param('companyId') companyId: string, @Body() updateCompanyDto: UpdateCampaignDto, @Request() req: ReqProps) {
+    return this.campaignService.update(id, companyId, req.user?.id as string, updateCompanyDto);
   }
 
-  @Delete(':id')
-  remove(@Param('id') id: string, @Request() req: ReqProps) {
-    return this.campaignService.remove(id, req.user?.id as string);
+  @Delete(':id/:companyId')
+  remove(@Param('id') id: string, @Param('companyId') companyId: string, @Request() req: ReqProps) {
+    return this.campaignService.remove(id, companyId, req.user?.id as string);
   }
 }

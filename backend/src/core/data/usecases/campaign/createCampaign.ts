@@ -16,6 +16,8 @@ export interface CreateCampaignUseCaseInput {
 export interface CreateCampaignUseCaseOutput {
     id: string;
     name: string;
+    userId: string;
+    companyId: string;
     createdAt: Date;
     updatedAt: Date;
 }
@@ -80,6 +82,8 @@ export class CreateCampaignUseCase {
         return Right.create({
             id: saveCampaignOrError.right.id,
             name: saveCampaignOrError.right.name,
+            companyId: saveCampaignOrError.right.companyId || "",
+            userId: saveCampaignOrError.right.userId || "",
             createdAt: saveCampaignOrError.right.createdAt,
             updatedAt: saveCampaignOrError.right.updatedAt
         });

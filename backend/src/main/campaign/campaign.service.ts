@@ -23,41 +23,42 @@ export class CampaignService {
     }
   }
 
-  async create(createCampaignDto: CreateCampaignDto, fileText: string, companyId: string) {
+  async create(createCampaignDto: CreateCampaignDto, fileText: string, userId: string) {
     const usecase = new CreateCampaignUseCase(this.campaignRepository, this.messageProducer);
-    const res = await usecase.exec({...createCampaignDto, listNumbers: fileText});
+    const res = await usecase.exec({...createCampaignDto, userId,listNumbers: fileText});
     this.errorHandling(res.left);
     return res.right;
   }
 
-  async findAll(size: number, skip: number, companyId: string) {
+  async findAll(size: number, skip: number, companyId: string, userId: string) {
     const usecase = new GetAllCampaignsUseCase(this.campaignRepository);
     const res = await usecase.exec({
       size,
       skip,
-      companyId
+      companyId,
+      userId
     });
     this.errorHandling(res.left);
     return res.right;
   }
 
-  async findOne(id: string, companyId: string) {
+  async findOne(id: string, companyId: string, userId: string) {
     const usecase = new GetCampaignUseCase(this.campaignRepository);
-    const res = await usecase.exec({ id, companyId});
+    const res = await usecase.exec({ id, companyId, userId});
     this.errorHandling(res.left);
     return res.right;
   }
 
-  async update(id: string, companyId: string, updateCampaignDto: UpdateCampaignProps) {
+  async update(id: string, companyId: string, userId: string, updateCampaignDto: UpdateCampaignProps) {
     const usecase = new UpdateCampaignUseCase(this.campaignRepository);
-    const res = await usecase.exec({ id, companyId, ...updateCampaignDto });
+    const res = await usecase.exec({ id, companyId, userId, ...updateCampaignDto });
     this.errorHandling(res.left);
     return res.right;
   }
 
-  async remove(id: string, companyId: string) {
+  async remove(id: string, companyId: string, userId: string) {
     const usecase = new DeleteCampaignUseCase(this.campaignRepository);
-    const res = await usecase.exec({ id , companyId});
+    const res = await usecase.exec({ id , companyId, userId});
     this.errorHandling(res.left);
     return res.right;
   }
