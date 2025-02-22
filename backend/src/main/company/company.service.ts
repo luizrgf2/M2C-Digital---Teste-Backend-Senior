@@ -6,6 +6,7 @@ import { GetAllCompaniesUseCase } from 'src/core/data/usecases/company/getAllCom
 import { GetCompanyUseCase } from 'src/core/data/usecases/company/getCompany';
 import { UpdateCompanyProps } from 'src/core/data/interfaces/repositories/company';
 import { DeleteCompanyUseCase } from 'src/core/data/usecases/company/deleteCompany';
+import { UpdateCompanyUseCase } from 'src/core/data/usecases/company/updateCompany';
 
 @Injectable()
 export class CompanyService {
@@ -39,7 +40,7 @@ export class CompanyService {
   }
 
   async update(id: string, updateCompanyDto: UpdateCompanyProps) {
-    const usecase = new GetCompanyUseCase(this.companyRepository)
+    const usecase = new UpdateCompanyUseCase(this.companyRepository)
     const res = await usecase.exec({id: id, ...updateCompanyDto})
     if(res.left) throw new HttpException(res.left.message, res.left.statusCode)
     return res.right
