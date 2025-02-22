@@ -6,6 +6,7 @@ import { AuthenticationModule } from './main/authentication/authentication.modul
 import { JwtModule } from '@nestjs/jwt';
 import { APP_GUARD } from '@nestjs/core';
 import { AuthenticationGuard } from './main/authentication/authentication.guard';
+import { CompanyModule } from './main/company/company.module';
 
 @Module({
   imports: [
@@ -18,6 +19,7 @@ import { AuthenticationGuard } from './main/authentication/authentication.guard'
       global: true,
       secret: process.env.JWT_SECRET || 'defaultSecret',
     }),
+    CompanyModule,
 ],
   controllers: [],
   providers: [

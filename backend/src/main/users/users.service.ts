@@ -39,7 +39,7 @@ export class UsersService {
 
   async update(id: string, updateUserDto: UpdateUserDto) {
     const createUserUseCase = new UpdateUserUseCase(this.userRepository, this.passwordEncryptor)
-    const res = await createUserUseCase.exec({id: id})
+    const res = await createUserUseCase.exec({id: id, ...updateUserDto})
     this.errorHandling(res.left)
     return res.right;
   }
