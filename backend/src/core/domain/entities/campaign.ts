@@ -1,5 +1,6 @@
 import { Either, Left, Right } from "src/core/shared/either";
 import { CampaignInvalidNameError } from "../errors/campaigns";
+import { ErrorBase } from "src/core/shared/errorBase";
 
 export interface ICampaign {
     id: string;
@@ -52,7 +53,7 @@ export class CampaignEntity {
         return this.name.length >= 4 && this.name.length <= 100;
     }
 
-    validate(): Either<Error, void> {
+    validate(): Either<ErrorBase, void> {
         if (!this.isValidName()) {
             return Left.create(new CampaignInvalidNameError());
         }
@@ -60,7 +61,7 @@ export class CampaignEntity {
         return Right.create(undefined);
     }
 
-    static create(campaign: ICampaign): Either<Error, CampaignEntity> {
+    static create(campaign: ICampaign): Either<ErrorBase, CampaignEntity> {
         const campaignEntity = new CampaignEntity(campaign);
         const validation = campaignEntity.validate();
         if (validation.left) return Left.create(validation.left);
@@ -68,7 +69,7 @@ export class CampaignEntity {
         return Right.create(campaignEntity);
     }
 
-    static createWithoutId(campaign: Omit<ICampaign, "id">): Either<Error, CampaignEntity> {
+    static createWithoutId(campaign: Omit<ICampaign, "id">): Either<ErrorBase, CampaignEntity> {
         return this.create({ ...campaign, id: "" });
     }
 }
