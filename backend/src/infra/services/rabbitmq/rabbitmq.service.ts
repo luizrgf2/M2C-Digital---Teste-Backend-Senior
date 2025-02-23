@@ -4,7 +4,7 @@ import {createId} from "@paralleldrive/cuid2"
 
 export interface MessageTemplateProps<T=any> {
   id: string;
-  type: "message";
+  type: string;
   date: Date;
   payload: T;
 }
@@ -19,13 +19,13 @@ export class RabbitMQService {
     this.channel = await this.connection.createChannel();
   }
 
-  async sendToQueue(queue: string, message: any) {
+  async sendToQueue(queue: string, message: any, type: string) {
 
     const messageToSend = {
       id: createId(),
       date: new Date(),
       payload: message,
-      type: "message"
+      type: type
     } as MessageTemplateProps
 
     await this.channel.assertQueue(queue, { durable: true });

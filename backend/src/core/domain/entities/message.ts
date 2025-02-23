@@ -102,4 +102,8 @@ export class MessageEntity {
     static createWithoutId(message: Omit<IMessage, "id">): Either<ErrorBase, MessageEntity> {
         return this.create({ ...message, id: "" });
     }
+
+    returnJson() {
+        return this.message
+    }
 }

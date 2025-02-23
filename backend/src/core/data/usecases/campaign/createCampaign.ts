@@ -50,7 +50,7 @@ export class CreateCampaignUseCase {
     }
 
     async sendMessageToQueue(messageToSend: MessageEntity, companyId: string, userId: string): Promise<Either<ErrorBase, void>> {
-        return await this.messageProducer.sendToQueue({
+        return await this.messageProducer.sendMessageToQueue({
             companyId: companyId,
             message: messageToSend,
             userId: userId
@@ -71,6 +71,13 @@ export class CreateCampaignUseCase {
         if (saveCampaignOrError.left) return Left.create(saveCampaignOrError.left);
 
         const numbersToSendToQueue = this.loadPhoneNumbersByListNumbersText(input.listNumbers)
+
+        await this.messageProducer.sendMessageQuantityToQueue({
+            quantity: numbersToSendToQueue.length,
+            campaignId: saveCampaignOrError.right.id,
+            companyId: saveCampaignOrError.right.companyId as string,
+            userId: saveCampaignOrError.right.userId as string
+        })
 
         for(const phoneNumber of numbersToSendToQueue) {
             const messageToSendOrError = this.createMessageToSend(input.message, saveCampaignOrError.right.id, phoneNumber)
