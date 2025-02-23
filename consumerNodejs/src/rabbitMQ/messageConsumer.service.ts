@@ -4,12 +4,13 @@ import { IMessage } from "../interfaces/messages/message";
 import { createId } from "@paralleldrive/cuid2";
 import { RedisClientType } from "@redis/client";
 import { MessageInfoQuantityProps } from "src/interfaces/messages/messageConsumerProps";
+import  { PSQL } from "../postgress/psql";
 
 
 const tasksRun = {}
 
 export class MessageConsumerService {
-    constructor(private readonly rabbitMqService: RabbitMQService, private readonly redis: RedisClientType) {}
+    constructor(private readonly rabbitMqService: RabbitMQService, private readonly redis: RedisClientType, private readonly psql: PSQL) {}
 
     private createKeyTotalItens(userId: string, companyId: string, campaignId: string) {
         return `${userId}:${companyId}:${campaignId}:total_itens`
@@ -22,6 +23,16 @@ export class MessageConsumerService {
     private async sumCountInCache(key: string) {
         await this.redis.incr(key)
     }
+
+    async  finalizeCampaign(campaignId: string) {
+        try {
+            const query = 'UPDATE campaigns SET finalized = true WHERE id = $1';
+            await this.psql.query(query, [campaignId]);
+            console.log(`Campanha ${campaignId} finalizada com sucesso!`);
+        } catch (error) {
+            console.error('Erro ao finalizar a campanha:', error);
+        }
+      }
 
     private async checkIfFinalized(userId: string, companyId: string, campaignId: string) {
         const keyTotalItens =  this.createKeyTotalItens(userId, companyId, campaignId)
@@ -38,7 +49,7 @@ export class MessageConsumerService {
 
         console.log(`${curretCountItens}/${totalItens}`)
         if(curretCountItens === totalItens) {
-            console.log("Finalizado a campanha!")
+            await this.finalizeCampaign(campaignId)
         }
     
     }

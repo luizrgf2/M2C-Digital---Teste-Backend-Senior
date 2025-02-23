@@ -1,8 +1,8 @@
 import { connectDb } from "./mongodb";
-import { MessageConsumerFactory } from "./rabbitMQ/messageConsumerFactory";
 import * as dotenv from "dotenv"
-
 dotenv.config()
+
+import { MessageConsumerFactory } from "./rabbitMQ/messageConsumerFactory";
 
 
 ;(async ()=>{
